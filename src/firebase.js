@@ -66,6 +66,17 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 	return userRef;
 };
 
+export const createNewEntry = (userEmail, entry, project, from, to, date) => {
+	firestore.collection("entry").add({
+		entry,
+		project,
+		from,
+		to,
+		date,
+		userEmail,
+	});
+};
+
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
 

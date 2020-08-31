@@ -11,14 +11,11 @@ import PrivateRoute from "./PrivateRoute";
 
 import SignInPage from "./components/sign-in.component";
 import SignUpPage from "./components/sign-up.component";
-import TimeTrackerPage from "./components/TimeTrackerPage.component";
+import DrawerNav from "./components/drawer-nav.component";
 
 import { setCurrentUser } from "./redux/user/user.actions";
-// import { selectCurrentUser } from "./redux/user/user.selectors";
 
-import { createStructuredSelector } from "reselect";
-
-import { selectCurrentUser } from "./redux/user/user.selectors";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 class App extends React.Component {
 	constructor(props) {
@@ -36,7 +33,7 @@ class App extends React.Component {
 		this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
 			if (userAuth) {
 				const userRef = await createUserProfileDocument(userAuth);
-				console.log("Subscribe");
+
 				userRef.onSnapshot((snapShot) => {
 					setCurrentUser({
 						id: snapShot.id,
@@ -61,11 +58,11 @@ class App extends React.Component {
 
 	render() {
 		return this.state.pending ? (
-			<div>LOADING.....................</div>
+			<LinearProgress />
 		) : (
 			<div className="App">
 				<Switch>
-					<PrivateRoute exact path="/" component={TimeTrackerPage} />
+					<PrivateRoute exact path="/" component={DrawerNav} />
 					<Route path="/signin" component={SignInPage} />
 					<Route path="/signup" component={SignUpPage} />
 				</Switch>
@@ -74,12 +71,8 @@ class App extends React.Component {
 	}
 }
 
-const mapStateToProps = createStructuredSelector({
-	currentUser: selectCurrentUser,
-});
-
 const mapDispatchToProps = (dispatch) => ({
 	setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);
