@@ -72,6 +72,7 @@ export const createNewEntry = (
   project,
   timeFrom,
   timeTo,
+  duration,
   date
 ) => {
   firestore.collection("entry").add({
@@ -80,6 +81,7 @@ export const createNewEntry = (
     timeFrom,
     timeTo,
     date,
+    duration,
     userEmail,
   });
 };

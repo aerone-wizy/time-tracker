@@ -58,7 +58,19 @@ const AddEntry = ({ email }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    createNewEntry(email, entry, project, timeFrom, timeTo, date);
+    const durationInMillis = moment(timeTo, "HH:mm").diff(
+      moment(timeFrom, "HH:mm")
+    );
+
+    createNewEntry(
+      email,
+      entry,
+      project,
+      timeFrom,
+      timeTo,
+      durationInMillis,
+      date
+    );
 
     setEntry("");
     setTimeFrom(moment().format("hh:mm"));

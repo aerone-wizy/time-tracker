@@ -32,18 +32,12 @@ function useDateEntries(email) {
       .collection("entry")
       .where("userEmail", "==", email)
       .onSnapshot((snapshot) => {
-        // setDates(
-        snapshot.docs.map(
-          (doc) => {
-            if (!dates.includes(doc.data().date)) {
-              setDates([...dates, doc.data().date]);
-            }
-            return null;
+        snapshot.docs.map((doc) => {
+          if (!dates.includes(doc.data().date)) {
+            setDates([...dates, doc.data().date]);
           }
-          // ? [...dates]
-          // : [doc.data().date, ...dates]
-        );
-        // );
+          return null;
+        });
       });
 
     return () => unsubscribe();
@@ -65,11 +59,14 @@ const TimeTracker = ({ currentUser }) => {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          {dates.map((date) => (
-            <div key={date}>
-              <DateList email={currentUser.email} date={date} />
-            </div>
-          ))}
+          {dates
+            .sort()
+            .reverse()
+            .map((date) => (
+              <div key={date}>
+                <DateList email={currentUser.email} date={date} />
+              </div>
+            ))}
         </Grid>
       </Grid>
     </div>
