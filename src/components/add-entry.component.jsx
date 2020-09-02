@@ -49,9 +49,11 @@ const AddEntry = ({ email }) => {
   const [timeFrom, setTimeFrom] = useState(moment().format("hh:mm"));
   const [timeTo, setTimeTo] = useState(moment().format("hh:mm"));
   const [duration, setDuration] = useState(
-    moment("00:00:00", "HH:mm:ss").format("HH:mm:ss")
+    moment("00:00:00", "HH:mm").format("HH:mm")
   );
   const [date, setDate] = useState(moment().format("YYYY-MM-DD"));
+
+  // console.log(moment(timeTo.toString(), "HH:mm").format("%S"));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -62,7 +64,7 @@ const AddEntry = ({ email }) => {
     setTimeFrom(moment().format("hh:mm"));
     setTimeTo(moment().format("hh:mm"));
     setDate(moment().format("YYYY-MM-DD"));
-    setDuration(moment("00:00:00", "HH:mm:ss").format("HH:mm:ss"));
+    setDuration(moment("00:00:00", "HH:mm").format("HH:mm"));
     setProject("");
   };
 
@@ -93,14 +95,23 @@ const AddEntry = ({ email }) => {
     }
   };
 
-  const computeDuration = () => {
-    console.log(duration);
-    console.log(timeTo);
-    const totalTimeTo = moment(timeTo, "hh:mm");
-    console.log(totalTimeTo.add(moment(duration, "HH:mm:ss")));
-    // setTimeTo(timeTo.add(moment(duration, "HH:mm:ss")));
+  const computeTimeTo = () => {
+    setTimeTo(
+      moment(timeFrom, "HH:mm")
+        .add(moment.duration(duration).asSeconds(), "seconds")
+        .format("HH:mm")
+    );
   };
 
+  const computeDuration = () => {
+    const difference = moment(timeTo, "HH:mm").diff(moment(timeFrom, "HH:mm"));
+
+    if (difference < 0) {
+      setTimeTo(moment(timeFrom, "HH:mm").format("HH:mm"));
+    } else {
+      setDuration(moment.utc(difference).format("HH:mm"));
+    }
+  };
   return (
     <div>
       <form onSubmit={handleSubmit} className={classes.form}>
@@ -145,6 +156,7 @@ const AddEntry = ({ email }) => {
             size="small"
             value={timeFrom}
             onChange={handleChange}
+            onBlur={computeDuration}
             className={classes.formField}
             variant="outlined"
             InputLabelProps={{
@@ -158,6 +170,7 @@ const AddEntry = ({ email }) => {
             size="small"
             value={timeTo}
             onChange={handleChange}
+            onBlur={computeDuration}
             className={classes.formField}
             variant="outlined"
             InputLabelProps={{
@@ -184,7 +197,7 @@ const AddEntry = ({ email }) => {
             size="small"
             value={duration}
             onChange={handleChange}
-            onBlur={computeDuration}
+            onBlur={computeTimeTo}
             className={classes.formField}
             variant="outlined"
             InputLabelProps={{
@@ -201,17 +214,6 @@ const AddEntry = ({ email }) => {
             ADD
           </Button>
         </div>
-
-        {
-          // 	<div className={classes.option}>
-          //   <IconButton size="small">
-          //     <AccessTimeIcon />
-          //   </IconButton>
-          //   <IconButton size="small">
-          //     <FormatListBulletedIcon />
-          //   </IconButton>
-          // </div>
-        }
       </form>
     </div>
   );
