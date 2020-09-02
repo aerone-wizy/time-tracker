@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EntryList = ({ entries }) => {
+const Entry = ({ entries }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [entry, setEntry] = useState(entries.entry);
@@ -199,4 +199,4 @@ const EntryList = ({ entries }) => {
   );
 };
 
-export default EntryList;
+export default Entry;

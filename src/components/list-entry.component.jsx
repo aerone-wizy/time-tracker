@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { firestore } from "../firebase";
 
-import EntryList from "./entry-list.component";
+import Entry from "./entry.component";
 
 function useEntries(email, date) {
   const [entries, setEntries] = useState([]);
@@ -31,7 +31,7 @@ const ListEntry = ({ email, date }) => {
   return (
     <div>
       {entries.map((entries) => (
-        <EntryList entries={entries} key={entries.id} />
+        <Entry entries={entries} key={entries.id} />
       ))}
     </div>
   );

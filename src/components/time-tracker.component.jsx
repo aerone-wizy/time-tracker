@@ -7,7 +7,7 @@ import { selectCurrentUser } from "../redux/user/user.selectors";
 import { firestore } from "../firebase";
 
 import AddEntry from "./add-entry.component";
-import ListEntry from "./list-entry.component";
+import DateList from "./date-list.component";
 
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -35,13 +35,8 @@ function useDateEntries(email) {
         // setDates(
         snapshot.docs.map(
           (doc) => {
-            console.log(doc.data().date);
-
-            if (dates.includes(doc.data().date)) {
-              console.log("true");
-            } else {
+            if (!dates.includes(doc.data().date)) {
               setDates([...dates, doc.data().date]);
-              console.log("false");
             }
             return null;
           }
@@ -61,8 +56,6 @@ const TimeTracker = ({ currentUser }) => {
   const classes = useStyles();
   const dates = useDateEntries(currentUser.email);
 
-  console.log(dates);
-
   return (
     <div>
       <Grid container spacing={3}>
@@ -72,18 +65,11 @@ const TimeTracker = ({ currentUser }) => {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          {dates.map((date) => {
-            console.log(date);
-            return (
-              <div key={date}>
-                <Paper>
-                  <div>{date}</div>
-                  <ListEntry email={currentUser.email} date={date} />
-                </Paper>
-                <br />
-              </div>
-            );
-          })}
+          {dates.map((date) => (
+            <div key={date}>
+              <DateList email={currentUser.email} date={date} />
+            </div>
+          ))}
         </Grid>
       </Grid>
     </div>

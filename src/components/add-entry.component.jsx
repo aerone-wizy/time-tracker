@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import moment from "moment";
+
 import { createNewEntry } from "../firebase";
 
 // import AccessTimeIcon from "@material-ui/icons/AccessTime";
@@ -14,7 +16,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 // import IconButton from "@material-ui/core/IconButton";
-import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   formField: {
