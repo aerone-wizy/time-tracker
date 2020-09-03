@@ -1,33 +1,8 @@
-import React, { useState, useEffect } from "react";
-
-import { firestore } from "../firebase";
+import React from "react";
 
 import Entry from "./entry.component";
 
-function useEntries(email, date) {
-  const [entries, setEntries] = useState([]);
-
-  useEffect(() => {
-    const unsubscribe = firestore
-      .collection("entry")
-      .where("userEmail", "==", email)
-      .where("date", "==", date)
-      .onSnapshot((snapshot) => {
-        setEntries(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-        );
-      });
-    return () => unsubscribe();
-  }, [email, date]);
-
-  return entries;
-}
-
-const ListEntry = ({ email, date }) => {
-  const entries = useEntries(email, date);
+const ListEntry = ({ entries }) => {
   return (
     <div>
       {entries.map((entries) => (

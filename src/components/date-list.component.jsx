@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import moment from "moment";
+
+import { firestore } from "../firebase";
 
 import ListEntry from "./list-entry.component";
 
@@ -26,9 +28,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function useEntries(email, date) {
+  const [entries, setEntries] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = firestore
+      .collection("entry")
+      .where("userEmail", "==", email)
+      .where("date", "==", date)
+      .onSnapshot((snapshot) => {
+        setEntries(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+      });
+    return () => unsubscribe();
+  }, [email, date]);
+
+  return entries;
+}
+
 const DateList = ({ email, date }) => {
   const classes = useStyles();
+  const entries = useEntries(email, date);
+  const [hasComputed, setHasComputed] = useState(false);
   const formatedDate = moment(date, "YYYY-MM-DD").format("dddd, MMMM Do YYYY");
+
+  const [totalDuration, setTotalDuration] = useState(0);
+
+  if (!hasComputed && entries.length > 0) {
+    const totalDurationInSeconds = entries.reduce((accumulator, entry) => {
+      return accumulator + entry.duration;
+    }, 0);
+    setTotalDuration(moment.utc(totalDurationInSeconds).format("HH:mm"));
+    setHasComputed(true);
+  }
 
   return (
     <div>
@@ -38,10 +74,10 @@ const DateList = ({ email, date }) => {
             {formatedDate}
           </Typography>
           <Typography variant="subtitle1" display="block">
-            00:00
+            Total Time: {totalDuration}
           </Typography>
         </div>
-        <ListEntry email={email} date={date} />
+        <ListEntry entries={entries} />
       </Paper>
     </div>
   );

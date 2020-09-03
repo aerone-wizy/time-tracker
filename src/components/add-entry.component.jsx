@@ -116,6 +116,7 @@ const AddEntry = ({ email }) => {
   };
 
   const computeDuration = () => {
+    //returns milliseconds
     const difference = moment(timeTo, "HH:mm").diff(moment(timeFrom, "HH:mm"));
 
     if (difference < 0) {
